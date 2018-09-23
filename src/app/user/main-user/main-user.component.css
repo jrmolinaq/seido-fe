@@ -1,0 +1,24 @@
+.fa-search { 
+    padding: 9px;
+ }
+
+.btn-option{
+    margin: 0px 0px 10px 5px;
+}
+
+li {
+    display: inline-block;
+}
+
+@media (max-width: 700px) {
+    ul {
+        text-align: center;
+        width: 100%;
+    }
+
+    li {
+        display: block !important;
+        list-style: none;
+        align-items: center;
+    }
+}

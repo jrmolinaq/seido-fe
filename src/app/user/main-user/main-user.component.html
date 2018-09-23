@@ -1,0 +1,98 @@
+<div class="container">
+  <div class="crud-list">
+    <h1>Usuarios</h1>
+
+    <div>
+        
+      <ul>
+        <li>
+          <button class="btn btn-info btn-option" type="button" data-toggle="modal" data-target="#userForm" (click)="onSelectNew()">
+            Nuevo Usuario
+          </button>
+        </li>
+
+        <li>
+          <button class="btn btn-info btn-option" type="button" routerLink="/finduser">
+            Buscar Usuario
+          </button>
+        </li>
+
+        <li>
+          <button class="btn btn-info btn-option" type="button"  routerLink="/listusers">
+            Lista de Usuarios
+          </button>
+        </li>
+      </ul>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- User form -->
+<div class="modal fade" id="userForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" *ngIf="selectedUser">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Detalles del Usuario</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <form>
+
+          <div class="form-group">
+            <label for="username">Usuario</label>
+            <input type="text"  [disabled]="editMode" class="form-control" placeholder="Nombre de usuario" id="username" 
+              name="username" required autocomplete="off" [(ngModel)]="selectedUser.username">
+          </div>
+          <div class="form-group" *ngIf="!editMode">
+            <label for="password">Contraseña</label>
+            <input type="password" class="form-control" placeholder="Contraseña" id="password" 
+              name="password" required [(ngModel)]="selectedUser.password">
+          </div>
+          <div class="form-group">
+            <label for="name">Nombre</label>
+            <input type="text" class="form-control" placeholder="Nombre" id="name" 
+              name="name" required autocomplete="off" [(ngModel)]="selectedUser.firstname">
+          </div>
+          <div class="form-group">
+            <label for="lastname">Apellido</label>
+            <input type="text" class="form-control" placeholder="Apellido" id="lastname" 
+              name="lastname" required autocomplete="off" [(ngModel)]="selectedUser.lastname">
+          </div>
+          <div class="form-group">
+            <label for="email">Correo</label>
+            <input type="email" class="form-control" placeholder="Correo Electrónico" id="email" 
+              name="email" required autocomplete="off" [(ngModel)]="selectedUser.email">
+          </div>
+          <div class="form-group" *ngIf="auth.isAuthenticated() && auth.isCurrentUserRoot()">
+            <label for="enabled">Habilitado</label>
+            <select class="form-control" id="enabled" name="enabled" [(ngModel)]="selectedUser.enabled">
+              <option value="1">Habilitado</option>
+              <option value="0">Deshabilitado</option>
+            </select>
+          </div>
+          <div class="form-group" *ngIf="auth.isAuthenticated() && auth.isCurrentUserRoot()">
+            <label for="rol">Rol</label>
+            <select class="form-control" id="rol" name="rol" [(ngModel)]="selectedUser.authority.name">
+              <option value="ROLE_ROOT">Root</option>
+              <option value="ROLE_ADMIN">Administrador</option>
+              <option value="ROLE_OPERATOR">Operador</option>
+            </select>
+          </div>
+          <div class="form-group" *ngIf="auth.isAuthenticated() && auth.isCurrentUserRoot()">
+            <label for="company">Empresa</label>
+            <select class="form-control" id="company" name="company" [(ngModel)]="selectedUser.company.id">
+              <option *ngFor="let comp of companyList" value="{{comp.id}}">{{comp.name}}</option>
+            </select>
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-info" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-info" data-dismiss="modal" (click)="onSave()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>

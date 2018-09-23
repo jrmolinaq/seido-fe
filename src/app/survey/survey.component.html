@@ -1,0 +1,16 @@
+<div class="survey-container contentcontainer codecontainer">
+
+  <div class="text-right">
+      <a class="btn-link text-right" *ngIf="patientId" [routerLink]="['/patient', patientId, 'event']">Volver</a>
+  </div>
+  
+  <div id="{{surveyContainerName}}"></div>
+
+  <div class="text-center" *ngIf="!surveyCompleted">
+    <button class="btn btn-primary" *ngIf="!isFirstPage()" (click)="prevPage()">Anterior</button>
+    <button class="btn btn-primary" *ngIf="!isLastPage()" (click)="nextPage()">Siguiente</button>
+    <button class="btn btn-info" *ngIf="!isLastPage()" (click)="savePartialAnswers()">Guardar</button>
+    <button class="btn btn-success" *ngIf="isLastPage()" (click)="completeLastPage()">Terminar</button>
+  </div>
+  
+</div>

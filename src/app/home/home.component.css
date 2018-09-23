@@ -1,0 +1,35 @@
+.gradient {
+    position:fixed;
+    padding:0;
+    margin:0;
+
+    top:1;
+    left:0;
+
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgb(255, 255, 255), rgb(59, 158, 137));
+}
+
+.homebg {
+    position: absolute;
+    padding:5;
+    margin:5;
+
+    top:0;
+    left:0;
+
+    width: 100%;
+    height: 100%;
+    background: rgb(0,182,141);
+}
+
+img {
+    border-radius: 50%;
+    margin: 100px 100px 30px 100px;
+	display:block;
+}
+
+.white {
+    color: white;
+}

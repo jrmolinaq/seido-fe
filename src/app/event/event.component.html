@@ -1,0 +1,99 @@
+<div *ngIf="patient">
+  <h2 class="patient-nuip">Paciente: {{patient.firstName}} {{patient.lastName}}
+    <span>({{patient.nuip}})</span>
+  </h2>
+</div>
+
+<div class="table-event-wrapper text-right"><!-- *ngIf="hasBasicSurveysFinished()" -->
+  <button class="btn btn-info btn-create" type="button" data-toggle="modal" data-target="#eventForm" (click)="onSelectNewEvent()">
+    Crear Evento
+  </button>
+</div>
+
+<div *ngIf="specialties && specialties.length > 1">
+  <p>
+    Especialidad:
+    <select *ngIf="patient" [(ngModel)]="selectedSpecialty" (ngModelChange)="selectSpecialtyFilter($event)">
+      <option *ngFor="let specialty of specialties" [ngValue]="specialty">
+        {{specialty.name}}
+      </option>
+    </select>
+  </p>
+</div>
+
+<div class="table-event-wrapper">
+  <!--
+    <h3>Información Básica</h3>
+   -->
+  <div *ngIf="patient" class="event-group">
+    <div *ngFor="let survey of filteredBasicSurveys">
+      <button class="btn survey-state {{getSurveyStateStyle(survey.state)}}" [routerLink]="['/patient', patient.id, 'survey', survey.id]">{{survey.template.name}}</button>
+    </div>
+  </div>
+</div>
+
+<div class="table-event-wrapper" *ngIf="filteredEvents && filteredEvents.length > 0"><!-- && hasBasicSurveysFinished()"> -->
+  <!--
+    <h3>Información Específica</h3>
+   -->
+  <div *ngFor="let event of filteredEvents" class="event-group">
+    <p>
+      <b>{{event.name}}</b> ({{event.createdDate}})
+      <!--
+
+        Si se activa la opción eliminar se debe hacer un popup  llamando primero onSelectDelete
+
+      <span class="event-header">
+          <button (click)="onDeleteEvent(event)"> 
+              <i class="fa fa-trash" aria-hidden="true" title="Eliminar Evento"></i>
+          </button>
+      </span>
+      -->
+    </p>
+
+    <div *ngFor="let survey of event.surveys">
+      <button class="btn survey-state {{getSurveyStateStyle(survey.state)}}" *ngIf="patient" [routerLink]="['/patient', patient.id, 'survey', survey.id]">{{survey.template.name}}</button>
+    </div>
+  </div>
+</div>
+
+<!-- Event form -->
+<div class="modal fade" id="eventForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" *ngIf="selectedSpecialty && newEvent">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Detalle de Evento</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="name">Nombre del Evento</label>
+            <input type="text" class="form-control" placeholder="Name" id="name" name="name" required="true" [(ngModel)]="newEvent.name">
+          </div>
+        
+          <div class="form-group">
+            <label for="createdDate">Fecha del Evento</label>
+            <input type="date" class="form-control" placeholder="yyyy-MM-dd" id="createdDate" name="createdDate" required="true" [(ngModel)]="newEvent.createdDate">
+          </div>
+<!--
+          <div class="form-group">
+            <label for="createdDate">Fecha del Evento</label>
+            <div class="input-group">
+              <input matInput [matDatepicker]="picker" class="form-control" placeholder="MM/dd/yyyy" id="createdDate" name="createdDate" required="true" [(ngModel)]="newEvent.createdDate" disabled>
+              <div class="input-group-addon">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker disabled="false"></mat-datepicker>
+              </div>
+            </div>
+          </div>
+-->
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="onSaveEvent()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>

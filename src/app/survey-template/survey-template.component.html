@@ -1,0 +1,151 @@
+<div class="container">
+  <div class="crud-list">
+    <h1>Especialidad: {{specialty.name}}</h1>
+
+    <button *ngIf="auth.isAuthenticated() && auth.isCurrentUserRoot()" class="btn btn-info btn-option" type="button" data-toggle="modal" data-target="#surveyTemplateForm" (click)="onSelectNew()">
+      Crear Plantilla
+    </button>
+
+    <button class="btn btn-info btn-option" type="button" (click)="downloadAllStatistics()">
+      Descarga General
+    </button>
+
+    <table class="table table-hover table-striped table-condensed">
+      <thead>
+        <tr class="table-primary">
+          <th scope="col"># ID</th>
+          <th scope="col"># Orden</th>
+          <th scope="col">Nombre</th>
+          <th scope="col">Tipo</th>
+          <th scope="col">Acciones</th>
+        </tr>
+      </thead>
+      
+      <tbody>
+        <tr *ngFor="let survey of surveyList">
+          <td>{{survey.id}}</td>
+          <td>{{survey.order_id}}</td>
+          <td>{{survey.name}}</td>
+          <ng-container [ngTemplateOutlet]="survey.type == 'BASIC_INFO' ? basic_tpl : specialty_tpl"></ng-container>
+          
+          <ng-template #basic_tpl>
+            <td>Básica</td>  
+          </ng-template>
+          
+          <ng-template #specialty_tpl>
+            <td>Especialidad</td>  
+          </ng-template>
+          
+          <td>
+            <button class="btn btn-info btn-xs" type="button" (click)="downloadStatistics(survey)" title="Descargar">
+              <i class="fa fa-download" aria-hidden="true"></i>
+            </button>
+            <!--
+              <a class="btn btn-info btn-xs" data-toggle="modal" data-target="#uploadForm"
+                (click)="onSelectUpload(survey)" title="Cargar" style="color: white">
+                <i class="fa fa-upload" aria-hidden="true"></i>
+              </a>
+            -->
+            <button *ngIf="auth.isAuthenticated() && auth.isCurrentUserRoot()" class="btn btn-info btn-xs" type="button" data-toggle="modal" data-target="#surveyTemplateForm"
+              (click)="onSelectDetail(survey)" title="Editar">
+                <i class="fa fa-pencil" aria-hidden="true"></i>
+            </button>
+            <button *ngIf="auth.isAuthenticated() && auth.isCurrentUserRoot()" class="btn btn-danger btn-xs" type="button" data-toggle="modal" data-target="#delsurveyTemplateForm"
+              (click)="onSelectDelete(survey)" title="Eliminar">
+                <i class="fa fa-trash" aria-hidden="true"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+  
+<!-- Survey form -->
+<div class="modal fade" id="surveyTemplateForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" *ngIf="selectedSurvey">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Detalles de la Plantilla</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="name">Nombre</label>
+            <input type="text" class="form-control" placeholder="Nombre" id="name" name="name" required="true" [(ngModel)]="selectedSurvey.name">
+          </div>
+          <div class="form-group">
+            <label for="surveyType">Tipo</label>
+            <select [(ngModel)]="selectedSurvey.type" name="surveyType">
+              <option value="BASIC_INFO">Información Básica</option>
+              <option value="SPECIALTY_INFO">Información de Especialidad</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="orden">Orden</label>
+            <input type="text" class="form-control" placeholder="Orden" id="orden" name="orden" required [(ngModel)]="selectedSurvey.order_id">
+          </div>
+          <div class="form-group">
+            <label for="surveyModel">Survey Model</label>
+            <textarea class="form-control" rows="5" id="surveyModel" name="surveyModel"
+              required="true" [(ngModel)]="selectedSurvey.jsSurvey"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-info" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-info" data-dismiss="modal" (click)="onSave()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Upload CSV form 
+<div class="modal fade" id="uploadForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Cargar Archivo CSV</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="fileField"></label>
+            <input type="file" id="fileField" name="fileField" required="true" #fileUploadField
+              class="form-control" placeholder="Cargar Archivo CSV ...">                
+          </div>
+          <div class="form-group text-right">
+            <button type="button" class="btn btn-outline-info" data-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-info" data-dismiss="modal" (click)="uploadFileCsv()">Cargar Archivo</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+-->
+
+<!-- Delete Survey Template form -->
+<div class="modal fade" id="delsurveyTemplateForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" *ngIf="selectedSurvey">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Eliminar Plantilla</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          ¿Está seguro que quiere eliminar la plantilla de encuesta?
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-info" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="onDelete()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>

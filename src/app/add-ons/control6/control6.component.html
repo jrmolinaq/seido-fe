@@ -1,0 +1,28 @@
+<div class="container">
+  <div class="crud-list">
+    <h1>Control 6 meses</h1>
+
+    <button class="btn btn-info btn-option" type="button" (click)="downloadControl6Meses()">
+      Descargar Archivo
+    </button>
+
+    <table class="table table-hover table-striped table-condensed">
+      <thead>
+        <tr class="table-primary">
+          <th scope="col">ID Paciente</th>
+          <th scope="col">Nombre</th>
+          <th scope="col">Fecha Cirugía</th>
+          <th scope="col">Correo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let control of controlList">
+          <td>{{control.patientId}}</td>
+          <td>{{control.name}}</td>
+          <td>{{control.surgeryDate}}</td>
+          <td>{{control.email}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
